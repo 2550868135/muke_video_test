@@ -15,7 +15,7 @@ def render_to_response(request, template, data=None):
     # 注册mako的模板
     lookup = TemplateLookup(
         directories=path,
-        intput_encoding='utf-8',
+        input_encoding='utf-8',
         output_encoding='utf-8'
     )
     
