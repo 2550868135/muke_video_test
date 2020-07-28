@@ -12,7 +12,7 @@
     action = reverse('login') if not to else '{}?to={}'.format(reverse('login'),to)
 %>
 <form class="form-horizontal edit-area" action="${action}" method="post">
-    ${ csrf_token}
+    ${ csrf_token }
     <div class="form-group">
         <div class="col-sm-10">
             <input type="text" class="form-control" name="username" placeholder="用户名">

@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.conf import settings  # 用于获取templates地址
 from django.template.context import Context
 from django.http import HttpResponse
-
+from django.template.context_processors import csrf
 
 def render_to_response(request, template, data=None):
     # 创建请求上下文实例
@@ -31,11 +31,11 @@ def render_to_response(request, template, data=None):
         context_instance = Context(data)
         
     result = {}
-    
+
     for d in context_instance:
         result.update(d)
     result['request'] = request
-    result['csrf_token'] = '<input type="hidden" name="csrfmiddlewaretoken" value={} />'.format(request.META.get('CSRF_COOKIE'))
+    result['csrf_token'] = '<input type="hidden" id="django-csrf-token" name="csrfmiddlewaretoken" value={0} />'.format(csrf(request)["csrf_token"])
 
     return HttpResponse(mako_template.render(**result))
 

@@ -1,7 +1,7 @@
 ''' @File :auth.py @Author:张宇 @Date :2020/7/27 21:59 @Desc : '''
 from django.views import View
 from app.libs.base_render import render_to_response
-from django.shortcuts import redirect, reverse
+from django.shortcuts import redirect, reverse,render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator
