@@ -18,10 +18,10 @@ VideoType.other.label = '其他'
 
 class FromType(Enum):
     youku = 'youku'
-    custon = 'custom'
+    custom = 'custom'
 
 FromType.youku.label = '优酷'
-FromType.custon.label = '自制'
+FromType.custom.label = '自制'
 
 
 class NationalityType(Enum):
@@ -37,11 +37,21 @@ NationalityType.korea.label = '韩国'
 NationalityType.america.label = '美国'
 NationalityType.other.label = '其他'
 
+
+class IdentifyType(Enum):
+    to_star = 'to_star'
+    supporting_rule = 'supporting_rule'
+    director = 'director'
+
+IdentifyType.to_star.label = '主演'
+IdentifyType.supporting_rule.label = '配角'
+IdentifyType.director.label = '导演'
+
 class Video(models.Model):
     name = models.CharField(max_length=100,null=False)
     image = models.CharField(max_length=500,default='')
     video_type = models.CharField(max_length=50,default=VideoType.other.value)
-    from_to = models.CharField(max_length=20,null=False,default=FromType.custon.value)
+    from_to = models.CharField(max_length=20,null=False,default=FromType.custom.value)
     nationality = models.CharField(max_length=20,default=NationalityType.other.value)
     info = models.TextField()
     status  = models.BooleanField(default=True,db_index=True)
@@ -63,6 +73,14 @@ class VideoStar(models.Model):
 
     class Meta:
         unique_together = ('video','name','idenify')
+
+    @property
+    def ident(self):
+        try:
+            result = IdentifyType[self.idenify]
+        except :
+            return ''
+        return result.label
 
     def __str__(self):
         return self.name

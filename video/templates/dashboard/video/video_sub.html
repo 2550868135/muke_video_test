@@ -1,0 +1,84 @@
+<%inherit file="../base.html"/>
+<%! from django.shortcuts import reverse %>
+<%def name="content()">
+<%! from app.model.video import VideoType,FromType,NationalityType,IdentifyType %>
+<%! from datetime import datetime %>
+<h1>${ video.name }
+    %if error:
+    |<span><small style="color: red !important;">${ error }</small></span>
+    %endif
+</h1>
+<form class="form-horizontal edit-area add-video-area add-url" action="${ reverse('video_star')}" method="post">
+    ${ csrf_token }
+    <p>演员与身份编辑区域</p>
+    <label>演员</label><input type="text" name="name" class="form-control"/><br/>
+    <label>身份</label>
+    <select name="idenify" class="form-control">
+        %for identify in IdentifyType:
+        <option value="${ identify.value }">
+            ${ identify.label }
+        </option>
+        %endfor
+    </select>
+    <input type="hidden" value="${ video.id }" name="video_id"/>
+    <input type="submit" value="添加" class="btn btn-info" id="add-star-btn"/>
+</form>
+% if FromType[video.from_to] == FromType.custom:
+<form enctype="multipart/form-data" class="form-horizontal edit-area add-video-area add-url" action="" method="post">
+%else:
+<form class="form-horizontal edit-area add-video-area add-url" action="" method="post">
+%endif
+    ${ csrf_token }
+    <p>地址与选集编辑区域</p>
+    % if FromType[video.from_to] != FromType.custom:
+    <label>添加地址</label><input id="url" type="url" name="url" class="form-control"/><br/>
+    %else:
+    <label>添加视频</label><input id="url" type="file" name="url" class="form-control"/><br/>
+    %endif
+    <label>添加集数</label><input id="number" type="number" name="number" class="form-control"/>
+    <input type="submit" value="添加" class="btn btn-info" id="add-url-btn"/>
+    <input type="hidden" value="" name="videosub_id" id="videosub-input-id"/>
+</form>
+<h2>集数</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>集数</th>
+            <th>地址</th>
+            <th>控制</th>
+        </tr>
+    </thead>
+    <tbody>
+        %for video_sub in video.video_sub.all():
+        <tr>
+            <td>第${ video_sub.number}集</td>
+            %if FromType[video.from_to] == FromType.custom:
+            <td><p class="info">${video_sub.url or '处理中,请稍后'}</p></td>
+            %else:
+            <td><p class="info">${video_sub.url}</p></td>
+            %endif
+            <td>
+                <a href="${video_sub.url}" class="btn btn-default">查看</a>
+                <button class="btn btn-default update-btn" data_id="${video_sub.id}" data-url="${video_sub.url}" data-number="${video_sub.number}">编辑</button>
+                <a href="${reverse('sub_delete',kwargs={'videosub_id':video_sub.id,'video_id':video.id})}" class="btn btn-default">删除</a>
+            </td>
+        </tr>
+        %endfor
+    </tbody>
+</table>
+<h2>演员(点击可删除)</h2>
+<ul>
+    %for video_star in video.video_star.all():
+    <li><a href="${reverse('star_delete',kwargs={'star_id':video_star.id,'video_id':video.id})}">${video_star.name}:${ IdentifyType[video_star.idenify].label}</a></li>|
+    %endfor
+</ul>
+
+</%def>
+
+<%def name="css()">
+<link href="/static/dashboard/css/video_sub.css/" rel="stylesheet">
+</%def>
+
+<%def name="js()">
+<script src="/static/dashboard/js/video_sub.js"></script>
+</%def>

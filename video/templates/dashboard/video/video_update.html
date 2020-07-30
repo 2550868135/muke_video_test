@@ -1,0 +1,83 @@
+<%inherit file="../base.html"/>
+<%! from django.shortcuts import reverse %>
+<%def name="content()">
+<%! from app.model.video import VideoType,FromType,NationalityType,IdentifyType %>
+<%! from datetime import datetime %>
+<form class="form-horizontal edit-area add-video-area" id="video-edit-area" action="${reverse('external_video')}" method="post">
+    ${ csrf_token }
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>名称</label>
+            <input type="text" class="form-control" name="name" placeholder="视频名称" value="${video.name}">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>海报</label>
+            <input type="text" class="form-control" name="image" placeholder="海报" value="${video.image}"/>
+            <img src="${ video.image }" style="width: 200px"/>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>视频类型</label>
+            <select name="video_type" class="form-control video-select" >
+                %for video_type in VideoType:
+                %if video.video_type == video_type.value:
+                    <option value="${ video_type.value }" selected>
+                        ${ video_type.label }
+                    </option>
+                %else:
+                    <option value="${ video_type.value }">
+                        ${ video_type.label }
+                    </option>
+                %endif
+                %endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>视频来源</label>
+            <select name="from_to" class="form-control video-select" >
+                %for from_type in FromType:
+                %if video.from_to == from_type.value:
+                    <option value="${ from_type.value }" selected>
+                        ${ from_type.label }
+                    </option>
+                %else:
+                    <option value="${ from_type.value }">
+                        ${ from_type.label }
+                    </option>
+                %endif
+                %endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <label>国籍</label>
+            <select name="nationality" class="form-control video-select" >
+                %for nationality_type in NationalityType:
+                %if video.nationality == nationality_type.value:
+                    <option value="${ nationality_type.value }" selected>
+                        ${ nationality_type.label }
+                    </option>
+                %else:
+                    <option value="${ nationality_type.value }">
+                        ${ nationality_type.label }
+                    </option>
+                %endif
+                %endfor
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-10">
+            <textarea name="info" class="form-control" placeholder="简介">${video.info}</textarea>
+        </div>
+    </div>
+    <input type="hidden" name="video_id" value="${video.id}"/>
+    <button type="submit" class="btn btn-default btn-info">修改</button>
+</form>
+</%def>
